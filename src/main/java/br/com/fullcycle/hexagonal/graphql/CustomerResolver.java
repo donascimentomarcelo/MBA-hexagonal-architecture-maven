@@ -1,5 +1,6 @@
 package br.com.fullcycle.hexagonal.graphql;
 
+import br.com.fullcycle.hexagonal.application.usecases.CreateCustomerUseCase;
 import br.com.fullcycle.hexagonal.dtos.CustomerDTO;
 import br.com.fullcycle.hexagonal.models.Customer;
 import br.com.fullcycle.hexagonal.services.CustomerService;
@@ -20,23 +21,9 @@ public class CustomerResolver {
     }
 
     @MutationMapping
-    public CustomerDTO createCustomer(@Argument CustomerDTO input) {
-
-        if (customerService.findByCpf(input.getCpf()).isPresent()) {
-            throw new RuntimeException("Customer already exists");
-        }
-        if (customerService.findByEmail(input.getEmail()).isPresent()) {
-            throw new RuntimeException("Customer already exists");
-        }
-
-        var customer = new Customer();
-        customer.setName(input.getName());
-        customer.setCpf(input.getCpf());
-        customer.setEmail(input.getEmail());
-
-        customer = customerService.save(customer);
-
-        return new CustomerDTO(customer);
+    public CreateCustomerUseCase.Output createCustomer(@Argument CustomerDTO input) {
+        final var useCase = new CreateCustomerUseCase(customerService);
+        return useCase.execute(new CreateCustomerUseCase.Input(input.getCpf(), input.getEmail(), input.getName()));
     }
 
     @QueryMapping
