@@ -49,14 +49,14 @@ public class SubscribeCustomerToEventUseCase extends UseCase<SubscribeCustomerTo
 
         eventService.save(event);
 
-        return new Output(event.getId(), ticket.getStatus().name(), ticket.getReservedAt());
+        return new Output(event.getId(), ticket.getStatus().name(), ticket.getReservedAt(), event.getId());
     }
 
-    public record Input(Long eventId, Long customerId) {
+    public record Input( Long customerId, Long eventId) {
 
     }
 
-    public record Output(Long ticketId, String ticketStatus, Instant reservationDate) {
+    public record Output(Long ticketId, String ticketStatus, Instant reservationDate, Long eventId) {
 
     }
 }
