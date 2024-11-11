@@ -1,11 +1,10 @@
-package br.com.fullcycle.hexagonal.controllers;
+package br.com.fullcycle.hexagonal.infrastructure.controllers;
 
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
 import br.com.fullcycle.hexagonal.application.usecases.CreatePartnerUseCase;
 import br.com.fullcycle.hexagonal.application.usecases.GetPartnerByIdUseCase;
-import br.com.fullcycle.hexagonal.dtos.PartnerDTO;
-import br.com.fullcycle.hexagonal.models.Partner;
-import br.com.fullcycle.hexagonal.services.PartnerService;
+import br.com.fullcycle.hexagonal.infrastructure.dtos.PartnerDTO;
+import br.com.fullcycle.hexagonal.infrastructure.services.PartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

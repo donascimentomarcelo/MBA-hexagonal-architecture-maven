@@ -1,13 +1,13 @@
 package br.com.fullcycle.hexagonal.controllers;
 
-import br.com.fullcycle.hexagonal.dtos.EventDTO;
-import br.com.fullcycle.hexagonal.dtos.PartnerDTO;
-import br.com.fullcycle.hexagonal.dtos.SubscribeDTO;
-import br.com.fullcycle.hexagonal.models.Customer;
-import br.com.fullcycle.hexagonal.models.Partner;
-import br.com.fullcycle.hexagonal.repositories.CustomerRepository;
-import br.com.fullcycle.hexagonal.repositories.EventRepository;
-import br.com.fullcycle.hexagonal.repositories.PartnerRepository;
+import br.com.fullcycle.hexagonal.infrastructure.dtos.EventDTO;
+import br.com.fullcycle.hexagonal.infrastructure.dtos.PartnerDTO;
+import br.com.fullcycle.hexagonal.infrastructure.dtos.SubscribeDTO;
+import br.com.fullcycle.hexagonal.infrastructure.models.Customer;
+import br.com.fullcycle.hexagonal.infrastructure.models.Partner;
+import br.com.fullcycle.hexagonal.infrastructure.repositories.CustomerRepository;
+import br.com.fullcycle.hexagonal.infrastructure.repositories.EventRepository;
+import br.com.fullcycle.hexagonal.infrastructure.repositories.PartnerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
