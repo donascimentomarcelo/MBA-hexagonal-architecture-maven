@@ -1,4 +1,4 @@
-package br.com.fullcycle.hexagonal.controllers;
+package br.com.fullcycle.hexagonal.infrastructure.controllers;
 
 import br.com.fullcycle.hexagonal.infrastructure.dtos.EventDTO;
 import br.com.fullcycle.hexagonal.infrastructure.dtos.PartnerDTO;

@@ -1,7 +1,6 @@
 package br.com.fullcycle.hexagonal.application.usecases;
 
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
-import br.com.fullcycle.hexagonal.infrastructure.MbaHexagonalArchitectureMavenApplication;
 import br.com.fullcycle.hexagonal.infrastructure.models.Customer;
 import br.com.fullcycle.hexagonal.infrastructure.repositories.CustomerRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -9,13 +8,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 
-@ActiveProfiles("test")
-@SpringBootTest(classes = MbaHexagonalArchitectureMavenApplication.class)
-public class CreateCustomerUseCaseTest {
+public class CreateCustomerUseCaseIT extends IntegrationTest {
 
     @Autowired
     private CreateCustomerUseCase useCase;
