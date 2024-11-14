@@ -1,11 +1,9 @@
-package br.com.fullcycle.hexagonal.infrastructure.controllers;
+package br.com.fullcycle.hexagonal.infrastructure.rest;
 
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
 import br.com.fullcycle.hexagonal.application.usecases.CreatePartnerUseCase;
 import br.com.fullcycle.hexagonal.application.usecases.GetPartnerByIdUseCase;
-import br.com.fullcycle.hexagonal.infrastructure.dtos.PartnerDTO;
-import br.com.fullcycle.hexagonal.infrastructure.services.PartnerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.fullcycle.hexagonal.infrastructure.dtos.NewPartnerDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +13,19 @@ import java.net.URI;
 @RequestMapping(value = "partners")
 public class PartnerController {
 
-    @Autowired
-    private PartnerService service;
+    private final CreatePartnerUseCase createPartnerUseCase;
+    private final GetPartnerByIdUseCase getPartnerByIdUseCase;
+
+    public PartnerController(final CreatePartnerUseCase createPartnerUseCase, final GetPartnerByIdUseCase getPartnerByIdUseCase) {
+        this.createPartnerUseCase = createPartnerUseCase;
+        this.getPartnerByIdUseCase = getPartnerByIdUseCase;
+    }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PartnerDTO dto) {
+    public ResponseEntity<?> create(@RequestBody NewPartnerDTO dto) {
         try {
-            final var useCase = new CreatePartnerUseCase(service);
-            final var output = useCase.execute(new CreatePartnerUseCase.Input(dto.getCnpj(), dto.getEmail(), dto.getName()));
+            var partner = new CreatePartnerUseCase.Input(dto.cnpj(), dto.email(), dto.name());
+            final var output = createPartnerUseCase.execute(partner);
             return ResponseEntity.created(URI.create("/partners" + output.id())).body(output);
         } catch (ValidationException ex) {
             return ResponseEntity.unprocessableEntity().body(ex.getMessage());
@@ -31,8 +34,7 @@ public class PartnerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
-        final var useCase = new GetPartnerByIdUseCase(service);
-        return useCase.execute(new GetPartnerByIdUseCase.Input(id))
+        return getPartnerByIdUseCase.execute(new GetPartnerByIdUseCase.Input(id))
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }

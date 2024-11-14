@@ -6,6 +6,21 @@ type Query {
 type Mutation {
     createCustomer(input: CustomerInput): Customer!
     createPartner(input: PartnerInput): Partner!
+    createEvent(input: EventInput): Event!
+}
+
+type Event {
+    id: ID!
+    date: String
+    totalSpots: String
+    name: String
+}
+
+input EventInput {
+    date: String
+    totalSpots: String
+    name: String
+    partnerId: ID
 }
 
 type Customer {
