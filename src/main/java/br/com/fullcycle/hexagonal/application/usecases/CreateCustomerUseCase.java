@@ -1,44 +1,45 @@
 package br.com.fullcycle.hexagonal.application.usecases;
 
 import br.com.fullcycle.hexagonal.application.UseCase;
+import br.com.fullcycle.hexagonal.application.entities.Customer;
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
-import br.com.fullcycle.hexagonal.infrastructure.models.Customer;
-import br.com.fullcycle.hexagonal.infrastructure.services.CustomerService;
+import br.com.fullcycle.hexagonal.application.repositories.CustomerRepository;
+
 import jakarta.inject.Named;
+
+import java.util.UUID;
 
 @Named
 public class CreateCustomerUseCase extends UseCase<CreateCustomerUseCase.Input, CreateCustomerUseCase.Output> {
 
-    private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
 
-    public CreateCustomerUseCase(final CustomerService customerService) {
-        this.customerService = customerService;
+    public CreateCustomerUseCase(final CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     @Override
     public Output execute(final Input input) {
-        if (customerService.findByCpf(input.cpf).isPresent()) {
+        if (customerRepository.customerOfCPF(input.cpf).isPresent()) {
             throw new ValidationException("Customer already exists");
         }
-        if (customerService.findByEmail(input.email).isPresent()) {
+        if (customerRepository.customerOfEmail(input.email).isPresent()) {
             throw new ValidationException("Customer already exists");
         }
 
-        var customer = new Customer();
-        customer.setName(input.name);
-        customer.setCpf(input.cpf);
-        customer.setEmail(input.email);
+        var customer = Customer.newCustomer(input.name, input.cpf, input.email);
 
-        customer = customerService.save(customer);
+        customer = customerRepository.create(customer);
 
-        return new Output(customer.getId(), customer.getCpf(), customer.getEmail(), customer.getName());
+        final var uuid = customer.customerId().value().toString();
+        return new Output(uuid, customer.cpf(), customer.email(), customer.name());
     }
 
     public record Input(String cpf, String email, String name) {
 
     }
 
-    public record Output(Long id, String cpf, String email, String name) {
+    public record Output(String id, String cpf, String email, String name) {
 
     }
 }

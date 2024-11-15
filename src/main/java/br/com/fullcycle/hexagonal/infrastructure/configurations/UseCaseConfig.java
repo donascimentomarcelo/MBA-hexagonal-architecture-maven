@@ -22,7 +22,7 @@ public class UseCaseConfig {
 
     @Bean
     public CreateCustomerUseCase createCustomerUseCase() {
-        return new CreateCustomerUseCase(customerService);
+        return new CreateCustomerUseCase(null);
     }
 
     @Bean
@@ -37,7 +37,7 @@ public class UseCaseConfig {
 
     @Bean
     public GetCustomerByIdUseCase getCustomerByIdUseCase() {
-        return new GetCustomerByIdUseCase(customerService);
+        return new GetCustomerByIdUseCase(null);
     }
 
     @Bean

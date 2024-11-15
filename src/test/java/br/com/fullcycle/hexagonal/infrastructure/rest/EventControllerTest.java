@@ -1,6 +1,7 @@
 package br.com.fullcycle.hexagonal.infrastructure.rest;
 
 import br.com.fullcycle.hexagonal.application.usecases.CreateCustomerUseCase;
+import br.com.fullcycle.hexagonal.application.usecases.CreateEventUseCase;
 import br.com.fullcycle.hexagonal.infrastructure.dtos.NewEventDTO;
 import br.com.fullcycle.hexagonal.infrastructure.dtos.NewSubscribeDTO;
 import br.com.fullcycle.hexagonal.infrastructure.models.Customer;
@@ -101,7 +102,7 @@ class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
                 .andReturn().getResponse().getContentAsByteArray();
 
-        var eventId = mapper.readValue(createResult, CreateCustomerUseCase.Output.class).id();
+        var eventId = mapper.readValue(createResult, CreateEventUseCase.Output.class).id();
 
         var sub = new NewSubscribeDTO(johnDoe.getId(), null);
 
