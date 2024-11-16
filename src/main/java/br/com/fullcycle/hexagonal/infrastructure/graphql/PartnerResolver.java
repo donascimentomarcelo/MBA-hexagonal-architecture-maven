@@ -27,6 +27,6 @@ public class PartnerResolver {
 
     @QueryMapping
     public GetPartnerByIdUseCase.Output partnerOfId(@Argument Long id) {
-        return getPartnerByIdUseCase.execute(new GetPartnerByIdUseCase.Input(id)).orElse(null);
+        return getPartnerByIdUseCase.execute(new GetPartnerByIdUseCase.Input(id.toString())).orElse(null);
     }
 }

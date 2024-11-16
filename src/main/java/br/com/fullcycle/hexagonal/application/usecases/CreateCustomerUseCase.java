@@ -32,7 +32,7 @@ public class CreateCustomerUseCase extends UseCase<CreateCustomerUseCase.Input, 
         customer = customerRepository.create(customer);
 
         final var uuid = customer.customerId().value().toString();
-        return new Output(uuid, customer.cpf(), customer.email(), customer.name());
+        return new Output(uuid, customer.cpf().value(), customer.email().value(), customer.name().value());
     }
 
     public record Input(String cpf, String email, String name) {
