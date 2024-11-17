@@ -65,7 +65,7 @@ class EventControllerTest {
                 "Disney on Ice",
                 "2021-01-01",
                 100,
-                disney.getId());
+                disney.getId().toString());
 
         final var result = this.mvc.perform(
                         MockMvcRequestBuilders.post("/events")
@@ -91,7 +91,7 @@ class EventControllerTest {
                 "Disney on Ice",
                 "2021-01-01",
                 100,
-                disney.getId());
+                disney.getId().toString());
 
         final var createResult = this.mvc.perform(
                         MockMvcRequestBuilders.post("/events")
@@ -114,7 +114,7 @@ class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
 
-        var actualEvent = eventRepository.findById(eventId).get();
+        var actualEvent = eventRepository.findById(Long.valueOf(eventId)).get();
         Assertions.assertEquals(1, actualEvent.getTickets().size());
     }
 }

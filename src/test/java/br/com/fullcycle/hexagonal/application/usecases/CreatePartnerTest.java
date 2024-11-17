@@ -16,7 +16,7 @@ public class CreatePartnerTest {
     @Test
     @DisplayName("Deve criar um parceiro")
     public void testCreate() throws Exception {
-        final var expectedCNPJ = "58554933000100";
+        final var expectedCNPJ = "41.543.345/0001-00";
         final var expectedEmail = "email@email.com";
         final var expectedName = "Joe McAlister";
 

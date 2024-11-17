@@ -1,21 +1,13 @@
 package br.com.fullcycle.hexagonal.application.usecases;
 
+import br.com.fullcycle.hexagonal.application.InMemoryEventRepository;
+import br.com.fullcycle.hexagonal.application.InMemoryPartnerRepository;
+import br.com.fullcycle.hexagonal.application.entities.Partner;
+import br.com.fullcycle.hexagonal.application.entities.PartnerId;
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
-import br.com.fullcycle.hexagonal.infrastructure.models.Event;
-import br.com.fullcycle.hexagonal.infrastructure.models.Partner;
-import br.com.fullcycle.hexagonal.infrastructure.services.EventService;
-import br.com.fullcycle.hexagonal.infrastructure.services.PartnerService;
-import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class CreateEventUseCaseTest {
 
@@ -24,27 +16,22 @@ class CreateEventUseCaseTest {
     public void testCreate() throws Exception {
 
         // given
+        final var aPartner = Partner.newPartner("John", "41.543.345/0001-00", "john@email.com");
         final var expectedDate = "2021-01-01";
         final var expectedName = "Disney on Ice";
         final var expectedTotalSpots = 10;
-        final var expectedPartnerId = TSID.fast().toLong();
+        final var expectedPartnerId = aPartner.partnerId();
 
         final var createInput =
-                new CreateEventUseCase.Input(expectedDate, expectedName, expectedPartnerId, expectedTotalSpots);
+                new CreateEventUseCase.Input(expectedDate, expectedName, expectedPartnerId.value(), expectedTotalSpots);
 
         // when
-        final var eventService = mock(EventService.class);
-        final var partnerService = mock(PartnerService.class);
+        final var eventRepository = new InMemoryEventRepository();
+        final var partnerRepository = new InMemoryPartnerRepository();
 
-        when(eventService.save(any())).thenAnswer(a -> {
-            final var e = a.getArgument(0, Event.class);
-            e.setId(TSID.fast().toLong());
-            return e;
-        });
+        partnerRepository.create(aPartner);
 
-        when(partnerService.findById(eq(expectedPartnerId))).thenReturn(Optional.of(new Partner()));
-
-        final var useCase = new CreateEventUseCase(eventService, partnerService);
+        final var useCase = new CreateEventUseCase(eventRepository, partnerRepository);
         final var output = useCase.execute(createInput);
 
         // then
@@ -52,7 +39,7 @@ class CreateEventUseCaseTest {
         Assertions.assertEquals(expectedDate, output.date());
         Assertions.assertEquals(expectedName, output.name());
         Assertions.assertEquals(expectedTotalSpots, output.totalSpots());
-        Assertions.assertEquals(expectedPartnerId, output.partnerId());
+        Assertions.assertEquals(expectedPartnerId.value(), output.partnerId());
     }
 
     @Test
@@ -63,20 +50,17 @@ class CreateEventUseCaseTest {
         final var expectedDate = "2021-01-01";
         final var expectedName = "Disney on Ice";
         final var expectedTotalSpots = 10;
-        final var expectedPartnerId = TSID.fast().toLong();
+        final var expectedPartnerId = PartnerId.unique().value();
         final var expectedError = "Partner not found";
 
         final var createInput =
                 new CreateEventUseCase.Input(expectedDate, expectedName, expectedPartnerId, expectedTotalSpots);
 
         // when
-        final var eventService = mock(EventService.class);
-        final var partnerService = mock(PartnerService.class);
+        final var eventRepository = new InMemoryEventRepository();
+        final var partnerRepository = new InMemoryPartnerRepository();
 
-        when(partnerService.findById(eq(expectedPartnerId)))
-                .thenReturn(Optional.empty());
-
-        final var useCase = new CreateEventUseCase(eventService, partnerService);
+        final var useCase = new CreateEventUseCase(eventRepository, partnerRepository);
         final var actualError = Assertions.assertThrows(ValidationException.class, () -> useCase.execute(createInput));
 
         // then
