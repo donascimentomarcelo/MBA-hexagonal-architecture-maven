@@ -1,21 +1,17 @@
 package br.com.fullcycle.hexagonal.application.usecases;
 
+import br.com.fullcycle.hexagonal.application.InMemoryCustomerRepository;
+import br.com.fullcycle.hexagonal.application.InMemoryEventRepository;
+import br.com.fullcycle.hexagonal.application.InMemoryTicketRepository;
+import br.com.fullcycle.hexagonal.application.domain.Customer;
+import br.com.fullcycle.hexagonal.application.domain.Event;
+import br.com.fullcycle.hexagonal.application.domain.Partner;
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
-import br.com.fullcycle.hexagonal.infrastructure.models.Customer;
-import br.com.fullcycle.hexagonal.infrastructure.models.Event;
 import br.com.fullcycle.hexagonal.infrastructure.models.TicketStatus;
-import br.com.fullcycle.hexagonal.infrastructure.services.CustomerService;
-import br.com.fullcycle.hexagonal.infrastructure.services.EventService;
-import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class SubscribeCustomerToEventUseCaseTest {
 
@@ -24,41 +20,34 @@ class SubscribeCustomerToEventUseCaseTest {
     public void testReserveTicket() throws Exception {
 
         final var expectedTicketsSize = 1;
-        final var customerID = TSID.fast().toLong();
-        final var eventID = TSID.fast().toLong();
 
-        final var aCustomer = new Customer();
-        aCustomer.setId(customerID);
-        aCustomer.setCpf("12345678901");
-        aCustomer.setName("John Doe");
-        aCustomer.setEmail("john.doe@gmail.com");
+        final var aPartner = Partner.newPartner("John", "41.543.345/0001-00", "john@email.com");
+        final var anEvent = Event.newEvent("Disney on Ice", "2021-01-01", 10, aPartner);
+        final var anCustomer = Customer.newCustomer("Jon Doe", "123.123.123-88", "jon@email.com");
 
-        final var aEvent = new Event();
-        aEvent.setId(eventID);
-        aEvent.setName("Disney");
-        aEvent.setTotalSpots(10);
+        final var customerID = anCustomer.customerId().value();
+        final var eventID = anEvent.eventId().value();
 
         final var subscribeInput =
-                new SubscribeCustomerToEventUseCase.Input(aCustomer.getId(), aEvent.getId());
+                new SubscribeCustomerToEventUseCase.Input(customerID, eventID);
 
-        final var customerService = mock(CustomerService.class);
-        final var eventService = mock(EventService.class);
+        final var customerRepository = new InMemoryCustomerRepository();
+        final var eventRepository = new InMemoryEventRepository();
+        final var ticketRepository = new InMemoryTicketRepository();
 
-        when(customerService.findById(customerID)).thenReturn(Optional.of(aCustomer));
-        when(eventService.findById(eventID)).thenReturn(Optional.of(aEvent));
-        when(eventService.findTicketByEventIdAndCustomerId(eventID, customerID)).thenReturn(Optional.empty());
-        when(eventService.save(any())).thenAnswer(a -> {
-            final var e = a.getArgument(0, Event.class);
-            assertEquals(expectedTicketsSize, e.getTickets().size());
-            return e;
-        });
+        customerRepository.create(anCustomer);
+        eventRepository.create(anEvent);
 
-        final var useCase = new SubscribeCustomerToEventUseCase(eventService, customerService);
+        final var useCase = new SubscribeCustomerToEventUseCase(customerRepository, eventRepository, ticketRepository);
         final var output = useCase.execute(subscribeInput);
 
         assertEquals(eventID, output.eventId());
         assertNotNull(output.reservationDate());
+        assertNotNull(output.ticketId());
         assertEquals(TicketStatus.PENDING.name(), output.ticketStatus());
+
+        final var event = eventRepository.eventOfId(anEvent.eventId());
+        assertEquals(expectedTicketsSize, event.get().tickets().size());
     }
 
     @Test
@@ -66,27 +55,26 @@ class SubscribeCustomerToEventUseCaseTest {
     public void shouldNotOrderATicket() throws Exception {
 
         final var expectedError = "Event not found";
-        final var customerID = TSID.fast().toLong();
-        final var eventID = TSID.fast().toLong();
 
-        final var aCustomer = new Customer();
-        aCustomer.setId(customerID);
-        aCustomer.setCpf("12345678901");
-        aCustomer.setName("John Doe");
-        aCustomer.setEmail("john.doe@gmail.com");
+        final var aPartner = Partner.newPartner("John", "41.543.345/0001-00", "john@email.com");
+        final var anEvent = Event.newEvent("Disney on Ice", "2021-01-01", 10, aPartner);
+        final var anCustomer = Customer.newCustomer("Jon Doe", "123.123.123-88", "jon@email.com");
+
+        final var customerID = anCustomer.customerId().value();
+        final var eventID = anEvent.eventId().value();
 
         final var subscribeInput =
                 new SubscribeCustomerToEventUseCase.Input(customerID, eventID);
 
-        final var customerService = mock(CustomerService.class);
-        final var eventService = mock(EventService.class);
+        final var customerRepository = new InMemoryCustomerRepository();
+        final var eventRepository = new InMemoryEventRepository();
+        final var ticketRepository = new InMemoryTicketRepository();
 
-        when(customerService.findById(customerID)).thenReturn(Optional.of(aCustomer));
-        when(eventService.findById(eventID)).thenReturn(Optional.empty());
+        customerRepository.create(anCustomer);
 
-        final var useCase = new SubscribeCustomerToEventUseCase(eventService, customerService);
+        final var useCase = new SubscribeCustomerToEventUseCase(customerRepository, eventRepository, ticketRepository);
         final var actualException = assertThrows(ValidationException.class, () -> useCase.execute(subscribeInput));
 
-        assertEquals(expectedError,actualException.getMessage());
+        assertEquals(expectedError, actualException.getMessage());
     }
 }

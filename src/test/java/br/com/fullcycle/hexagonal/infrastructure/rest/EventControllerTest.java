@@ -104,7 +104,7 @@ class EventControllerTest {
 
         var eventId = mapper.readValue(createResult, CreateEventUseCase.Output.class).id();
 
-        var sub = new NewSubscribeDTO(johnDoe.getId(), null);
+        var sub = new NewSubscribeDTO(johnDoe.getId().toString(), null);
 
         this.mvc.perform(
                         MockMvcRequestBuilders.post("/events/{id}/subscribe", eventId)
