@@ -17,6 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class CustomerEntity {
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String name;
