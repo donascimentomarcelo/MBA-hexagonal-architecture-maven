@@ -17,8 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class CustomerEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -29,7 +28,7 @@ public class CustomerEntity {
     public CustomerEntity() {
     }
 
-    public CustomerEntity(Long id, String name, String cpf, String email) {
+    public CustomerEntity(UUID id, String name, String cpf, String email) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
@@ -42,18 +41,18 @@ public class CustomerEntity {
 
     public static CustomerEntity of(final Customer customer) {
         return new CustomerEntity(
-                Long.valueOf(customer.customerId().value()),
+                UUID.fromString(customer.customerId().value()),
                 customer.name().value(),
                 customer.cpf().value(),
                 customer.email().value()
         );
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
