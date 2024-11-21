@@ -21,7 +21,7 @@ public class CreateEventUseCase extends UseCase<CreateEventUseCase.Input, Create
 
     @Override
     public Output execute(final Input input) {
-        final var aPartner = partnerJpaRepository.partnerOfId(PartnerId.with(input.partnerId.toString()))
+        final var aPartner = partnerJpaRepository.partnerOfId(PartnerId.with(input.partnerId))
                 .orElseThrow(() -> new ValidationException("Partner not found"));
         final var event = Event.newEvent(input.name, input.date, input.totalSpots, aPartner);
 

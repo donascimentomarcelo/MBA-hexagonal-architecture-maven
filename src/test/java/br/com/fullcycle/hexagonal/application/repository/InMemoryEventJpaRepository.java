@@ -34,4 +34,10 @@ public class InMemoryEventJpaRepository implements EventRepository {
         this.event.put(event.eventId().value(), event);
         return event;
     }
+
+    @Override
+    public void deleteAll() {
+        this.event.clear();
+    }
+
 }

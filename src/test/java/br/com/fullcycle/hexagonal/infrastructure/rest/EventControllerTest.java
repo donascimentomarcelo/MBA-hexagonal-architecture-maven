@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -113,7 +115,7 @@ class EventControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
 
-        var actualEvent = eventRepository.findById(Long.valueOf(eventId)).get();
-        Assertions.assertEquals(1, actualEvent.getTickets().size());
+        var actualEvent = eventRepository.findById(UUID.fromString(eventId)).get();
+        Assertions.assertEquals(1, actualEvent.tickets().size());
     }
 }

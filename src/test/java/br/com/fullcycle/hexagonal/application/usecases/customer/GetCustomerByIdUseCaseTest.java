@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-class GetCustomerEntityByIdUseCaseTest {
+class GetCustomerByIdUseCaseTest {
 
     @Test
     @DisplayName("Não deve cadastrar um cliente com CPF duplicado")

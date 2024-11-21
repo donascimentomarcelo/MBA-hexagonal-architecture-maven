@@ -38,4 +38,9 @@ public class TicketDatabaseRepository implements TicketRepository {
         return this.ticketJpaRepository.save(TicketEntity.of(ticket))
                 .toTicket();
     }
+
+    @Override
+    public void deleteAll() {
+        this.ticketJpaRepository.deleteAll();
+    }
 }

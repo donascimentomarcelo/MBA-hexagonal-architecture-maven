@@ -54,4 +54,9 @@ public class InMemoryCustomerJpaRepository implements CustomerRepository {
         this.customersByEmail.put(customer.email().value(), customer);
         return customer;
     }
+
+    @Override
+    public void deleteAll() {
+        this.customers.clear();
+    }
 }

@@ -1,26 +1,26 @@
 package br.com.fullcycle.hexagonal.application.usecases.customer;
 
+import br.com.fullcycle.hexagonal.application.domain.customer.Customer;
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
+import br.com.fullcycle.hexagonal.application.repositories.CustomerRepository;
 import br.com.fullcycle.hexagonal.application.usecases.IntegrationTest;
-import br.com.fullcycle.hexagonal.infrastructure.jpa.entities.CustomerEntity;
-import br.com.fullcycle.hexagonal.infrastructure.jpa.repositories.CustomerJpaRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class CreateCustomerEntityUseCaseIT extends IntegrationTest {
+public class CreateCustomerUseCaseIT extends IntegrationTest {
 
     @Autowired
     private CreateCustomerUseCase useCase;
 
     @Autowired
-    private CustomerJpaRepository customerRepository;
+    private CustomerRepository customerRepository;
 
-    @AfterEach
-    void tearDown() {
+    @BeforeEach
+    void setUp() {
         customerRepository.deleteAll();
     }
 
@@ -58,12 +58,8 @@ public class CreateCustomerEntityUseCaseIT extends IntegrationTest {
         Assertions.assertEquals(expectedError, actualException.getMessage());
     }
 
-    private CustomerEntity createCustomer(final String cpf, final String name, final String email) {
-        final var aCustomer = new CustomerEntity();
-        aCustomer.setCpf(cpf);
-        aCustomer.setName(name);
-        aCustomer.setEmail(email);
-
-        return customerRepository.save(aCustomer);
+    private Customer createCustomer(final String cpf, final String name, final String email) {
+        final var aCustomer = Customer.newCustomer(name, cpf, email);
+        return customerRepository.create(aCustomer);
     }
 }

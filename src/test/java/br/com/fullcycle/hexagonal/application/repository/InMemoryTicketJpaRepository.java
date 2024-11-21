@@ -34,4 +34,9 @@ public class InMemoryTicketJpaRepository implements TicketRepository {
         this.tickets.put(ticket.ticketId().value(), ticket);
         return ticket;
     }
+
+    @Override
+    public void deleteAll() {
+        this.tickets.clear();
+    }
 }

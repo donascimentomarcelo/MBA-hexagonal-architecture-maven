@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
+@Entity(name = "Customer")
 @Table(name = "customers")
 public class CustomerEntity {
 

@@ -17,4 +17,6 @@ public interface CustomerRepository {
     Customer create(Customer customer);
 
     Customer update(Customer customer);
+
+    void deleteAll();
 }
