@@ -1,7 +1,10 @@
 package br.com.fullcycle.hexagonal.application.usecases.event;
 
+import br.com.fullcycle.hexagonal.application.domain.partner.Partner;
 import br.com.fullcycle.hexagonal.application.domain.partner.PartnerId;
 import br.com.fullcycle.hexagonal.application.exception.ValidationException;
+import br.com.fullcycle.hexagonal.application.repositories.EventRepository;
+import br.com.fullcycle.hexagonal.application.repositories.PartnerRepository;
 import br.com.fullcycle.hexagonal.application.usecases.IntegrationTest;
 import br.com.fullcycle.hexagonal.infrastructure.jpa.entities.PartnerEntity;
 import br.com.fullcycle.hexagonal.infrastructure.jpa.repositories.EventJpaRepository;
@@ -18,10 +21,10 @@ class CreateEventUseCaseIT extends IntegrationTest {
     private CreateEventUseCase useCase;
 
     @Autowired
-    private EventJpaRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Autowired
-    private PartnerJpaRepository partnerRepository;
+    private PartnerRepository partnerRepository;
 
     @BeforeEach
     void tearDown() {
@@ -38,10 +41,10 @@ class CreateEventUseCaseIT extends IntegrationTest {
         final var expectedName = "Disney on Ice";
         final var expectedTotalSpots = 10;
 
-        PartnerEntity partner = createPartner();
+        Partner partner = createPartner();
 
         final var createInput =
-                new CreateEventUseCase.Input(expectedDate, expectedName, partner.getId().toString(), expectedTotalSpots);
+                new CreateEventUseCase.Input(expectedDate, expectedName, partner.partnerId().value(), expectedTotalSpots);
 
         final var output = useCase.execute(createInput);
 
@@ -50,7 +53,7 @@ class CreateEventUseCaseIT extends IntegrationTest {
         Assertions.assertEquals(expectedDate, output.date());
         Assertions.assertEquals(expectedName, output.name());
         Assertions.assertEquals(expectedTotalSpots, output.totalSpots());
-        Assertions.assertEquals(partner.getId(), output.partnerId());
+        Assertions.assertEquals(partner.partnerId().value(), output.partnerId());
     }
 
     @Test
@@ -73,11 +76,9 @@ class CreateEventUseCaseIT extends IntegrationTest {
         Assertions.assertEquals(expectedError, actualError.getMessage());
     }
 
-    private PartnerEntity createPartner() {
-        final var aPartner = new PartnerEntity();
-        aPartner.setCnpj("58554933000100");
-        aPartner.setName("email@email.com");
-        aPartner.setEmail("Joe McAlister");
-        return partnerRepository.save(aPartner);
+    private Partner createPartner() {
+
+        final var partner = Partner.newPartner("Joe McAlister", "58.554.933/0001-00", "email@email.com");
+        return partnerRepository.create(partner);
     }
 }

@@ -9,17 +9,17 @@ import java.util.Optional;
 
 public class GetPartnerByIdUseCase extends UseCase<GetPartnerByIdUseCase.Input, Optional<GetPartnerByIdUseCase.Output>> {
 
-    private final PartnerRepository partnerJpaRepository;
+    private final PartnerRepository partnerRepository;
 
-    public GetPartnerByIdUseCase(final PartnerRepository partnerJpaRepository) {
-        this.partnerJpaRepository = Objects.requireNonNull(partnerJpaRepository);
+    public GetPartnerByIdUseCase(final PartnerRepository partnerRepository) {
+        this.partnerRepository = Objects.requireNonNull(partnerRepository);
     }
 
     @Override
     public Optional<Output> execute(final Input input) {
-        return partnerJpaRepository.partnerOfId(PartnerId.with(input.id))
+        return partnerRepository.partnerOfId(PartnerId.with(input.id))
                 .map(partner -> new Output(
-                        partner.partnerId().value().toString(),
+                        partner.partnerId().value(),
                         partner.cnpj().value(),
                         partner.email().value(),
                         partner.name().value()

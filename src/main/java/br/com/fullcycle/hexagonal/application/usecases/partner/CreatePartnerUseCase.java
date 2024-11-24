@@ -12,24 +12,24 @@ import java.util.Objects;
 
 public class CreatePartnerUseCase extends UseCase<CreatePartnerUseCase.Input, CreatePartnerUseCase.Output> {
 
-    private final PartnerRepository partnerJpaRepository;
+    private final PartnerRepository partnerRepository;
 
-    public CreatePartnerUseCase(final PartnerRepository partnerJpaRepository) {
-        this.partnerJpaRepository = Objects.requireNonNull(partnerJpaRepository);
+    public CreatePartnerUseCase(final PartnerRepository partnerRepository) {
+        this.partnerRepository = Objects.requireNonNull(partnerRepository);
     }
 
     @Override
     public Output execute(final Input input) {
-        if (partnerJpaRepository.partnerOfCNPJ(new CNPJ(input.cnpj)).isPresent()) {
+        if (partnerRepository.partnerOfCNPJ(new CNPJ(input.cnpj)).isPresent()) {
             throw new ValidationException("Partner already exists");
         }
-        if (partnerJpaRepository.partnerOfEmail(new Email(input.email)).isPresent()) {
+        if (partnerRepository.partnerOfEmail(new Email(input.email)).isPresent()) {
             throw new ValidationException("Partner already exists");
         }
 
         var partner = Partner.newPartner(input.name, input.cnpj, input.email);
 
-        partner = partnerJpaRepository.create(partner);
+        partner = partnerRepository.create(partner);
 
         return new Output(
                 partner.partnerId().value(),

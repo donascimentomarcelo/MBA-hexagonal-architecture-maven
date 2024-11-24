@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class TicketDatabaseRepository implements TicketRepository {
@@ -21,7 +22,7 @@ public class TicketDatabaseRepository implements TicketRepository {
 
     @Override
     public Optional<Ticket> ticketOfId(final TicketId anId) {
-        return this.ticketJpaRepository.findById(Long.valueOf(anId.value()))
+        return this.ticketJpaRepository.findById(UUID.fromString(anId.value()))
                 .map(TicketEntity::toTicket);
     }
 

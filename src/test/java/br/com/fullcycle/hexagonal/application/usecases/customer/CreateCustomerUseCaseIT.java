@@ -27,7 +27,7 @@ public class CreateCustomerUseCaseIT extends IntegrationTest {
     @Test
     @DisplayName("Deve criar um cliente")
     public void testCreate() throws Exception {
-        final var expectedCPF = "12345678";
+        final var expectedCPF = "123.456.790-66";
         final var expectedEmail = "email@email.com";
         final var expectedName = "Joe McAlister";
 
@@ -44,7 +44,7 @@ public class CreateCustomerUseCaseIT extends IntegrationTest {
     @Test
     @DisplayName("Não deve cadastrar um cliente com CPF duplicado")
     public void testCreateWithDuplicatedCPFShouldFail() throws Exception {
-        final var expectedCPF = "12345679";
+        final var expectedCPF = "123.456.790-66";
         final var expectedEmail = "email@email.com";
         final var expectedName = "Joe McAlister";
         final var expectedError = "Customer already exists";

@@ -33,8 +33,8 @@ public class PartnerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) {
-        return getPartnerByIdUseCase.execute(new GetPartnerByIdUseCase.Input(id.toString()))
+    public ResponseEntity<?> get(@PathVariable String id) {
+        return getPartnerByIdUseCase.execute(new GetPartnerByIdUseCase.Input(id))
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }
