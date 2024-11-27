@@ -11,7 +11,8 @@
 	<groupId>br.com.fullcycle</groupId>
 	<artifactId>hexagonal</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>MBA-hexagonal-architecture-maven</name>
+    <packaging>pom</packaging>
+    <name>MBA-hexagonal-architecture-maven</name>
 	<description>MBA hexagonal fullcycle</description>
 	<url/>
 	<licenses>
@@ -20,7 +21,12 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
+    <modules>
+        <module>domain</module>
+		<module>application</module>
+		<module>infrastructure</module>
+	</modules>
+    <scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
