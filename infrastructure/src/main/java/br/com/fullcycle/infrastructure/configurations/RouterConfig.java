@@ -1,0 +1,18 @@
+package br.com.fullcycle.infrastructure.configurations;
+
+import br.com.fullcycle.infrastructure.http.SpringHttpRouter;
+import br.com.fullcycle.infrastructure.rest.PartnerFnController;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.function.RouterFunction;
+
+@Configuration
+public class RouterConfig {
+
+    public RouterFunction<?> routes(
+            final PartnerFnController partnerFnController
+            ) {
+        final var router = new SpringHttpRouter();
+        partnerFnController.bind(router);
+        return router.router().build();
+    }
+}
